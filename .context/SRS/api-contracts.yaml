@@ -1,0 +1,765 @@
+openapi: 3.0.3
+info:
+  title: Autonomous QA & AI-TestOps Engine API
+  version: 1.0.0
+  description: |
+    Formal OpenAPI specification defining the contracts, payloads, and latency budgets for the
+    System Under Test (SUT) and the Autonomous QA & AI-TestOps Engine.
+    
+    Covers:
+    - Layer 1 & Layer 2: Core authentication, user profile, and system health SLA probes.
+    - Layer 3: Generative AI / RAG query endpoints and semantic evaluation harnesses.
+    - TestOps: Quality Gate execution recording and multi-layer telemetry retrieval.
+  contact:
+    name: Marttin Roman
+    email: marttinroman@gmail.com
+    url: https://marttinroman.github.io
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000
+    description: Local development & test environment
+  - url: https://staging.autonomous-qa.engine
+    description: Staging pre-production environment (CI target)
+  - url: https://api.autonomous-qa.engine
+    description: Production environment (Synthetic monitoring target)
+
+paths:
+  /api/v1/health:
+    get:
+      summary: Health check and SLA latency probe
+      description: |
+        Endpoint monitored by Layer 2 to verify system uptime, database availability,
+        and response time budgets (SLA: p95 < 500ms).
+      operationId: getHealthStatus
+      responses:
+        '200':
+          description: System is healthy and responsive within SLA budgets.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckResponse'
+              example:
+                status: "healthy"
+                timestamp: "2026-11-06T19:30:00Z"
+                uptimeSeconds: 86400
+                latencyMs: 42.5
+                database:
+                  connected: true
+                  responseTimeMs: 8.2
+                version: "1.0.0"
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+        '503':
+          description: Service unavailable or database connection failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/auth/login:
+    post:
+      summary: Authenticate test or user credentials
+      description: Exchanges valid user credentials for a signed JWT access token.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: "alex.sdet@example.com"
+              password: "SecurePassword123!"
+      responses:
+        '200':
+          description: Authentication successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                tokenType: "Bearer"
+                expiresIn: 3600
+                user:
+                  id: "usr_9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d"
+                  email: "alex.sdet@example.com"
+                  role: "sdet"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/auth/profile:
+    get:
+      summary: Retrieve authenticated user profile
+      description: Returns profile metadata for the authenticated session token.
+      operationId: getUserProfile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Profile retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+              example:
+                id: "usr_9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d"
+                email: "alex.sdet@example.com"
+                fullName: "Alex Rivera"
+                role: "sdet"
+                organization: "Quality Engineering Labs"
+                createdAt: "2026-01-15T10:00:00Z"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/ai/query:
+    post:
+      summary: Query the RAG conversational assistant
+      description: |
+        Generative AI endpoint tested by Layer 3. Retrieves domain context chunks
+        and generates a contextual answer. Evaluated for context faithfulness and hallucination prevention.
+      operationId: queryRAG
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RAGQueryRequest'
+            example:
+              query: "What is the policy for cancellation refunds?"
+              topK: 3
+              temperature: 0.0
+      responses:
+        '200':
+          description: Answer successfully generated from retrieved context.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RAGQueryResponse'
+              example:
+                query: "What is the policy for cancellation refunds?"
+                answer: "Cancellations made within 14 days of purchase receive a 100% full refund."
+                model: "gemini-1.5-pro"
+                latencyMs: 410.2
+                retrievedContext:
+                  - documentId: "doc_policy_2026_01"
+                    content: "Article 4: Full refund is guaranteed for cancellations requested within 14 calendar days."
+                    similarityScore: 0.93
+                tokenUsage:
+                  promptTokens: 120
+                  completionTokens: 22
+                  totalTokens: 142
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: Semantic content safety policy violation or prompt injection detected.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/ai/evaluate-semantic:
+    post:
+      summary: Execute semantic cosine and faithfulness evaluation
+      description: |
+        Harness endpoint invoked by Layer 3 during test runs. Computes vector cosine similarity
+        against ground truth and validates context faithfulness to block hallucinations.
+      operationId: evaluateSemanticQuality
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SemanticEvaluationRequest'
+            example:
+              testId: "TC-AI-001"
+              generatedAnswer: "Full refunds are guaranteed within 14 days."
+              groundTruthAnswer: "Customers receive a 100% refund if cancelled within 14 days."
+              retrievedContextChunks:
+                - "Article 4: Full refund is guaranteed for cancellations requested within 14 calendar days."
+              similarityThreshold: 0.80
+              faithfulnessThreshold: 0.85
+      responses:
+        '200':
+          description: Semantic evaluation completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SemanticEvaluationResponse'
+              example:
+                testId: "TC-AI-001"
+                cosineSimilarity: 0.915
+                faithfulnessScore: 1.0
+                passedThreshold: true
+                hallucinatedClaims: []
+                evaluationDurationMs: 38.4
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/test-runs:
+    get:
+      summary: List historical Quality Gate executions
+      description: Returns paginated test run records filtered by branch, layer, or status.
+      operationId: listTestRuns
+      parameters:
+        - name: branch
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "main"
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [PASSED, FAILED, RUNNING]
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: List of test runs.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - total
+                  - items
+                properties:
+                  total:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TestRun'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: Register a new Quality Gate execution run
+      description: Initiates tracking for a CI/CD test run across the 3 validation layers.
+      operationId: createTestRun
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TestRunCreateRequest'
+            example:
+              commitSha: "1c77779d85e7a9b0c2d3e4f5a6b7c8d9e0f1a2b3"
+              branch: "main"
+              triggeredBy: "github-actions"
+              environment: "staging"
+              layers: ["UI", "API", "AI_EVAL"]
+      responses:
+        '201':
+          description: Test run registered successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestRun'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/test-runs/{runId}:
+    get:
+      summary: Retrieve detailed test run telemetry
+      description: Returns multi-layer results, latency percentiles, and Allure report links for a specific run.
+      operationId: getTestRunById
+      parameters:
+        - name: runId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: "run_8f3b2a1c-9d0e-4f5a-b6c7-d8e9f0a1b2c3"
+      responses:
+        '200':
+          description: Test run details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestRun'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Signed JWT bearer token issued by `/api/v1/auth/login`.
+
+  responses:
+    BadRequest:
+      description: Invalid request payload, missing mandatory fields, or schema mismatch.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "VALIDATION_ERROR"
+              message: "Missing required property 'email' in request body."
+              timestamp: "2026-11-06T19:30:00Z"
+
+    Unauthorized:
+      description: Missing or expired bearer authorization token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "UNAUTHORIZED"
+              message: "Access token is invalid or has expired."
+              timestamp: "2026-11-06T19:30:00Z"
+
+    NotFound:
+      description: Requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "NOT_FOUND"
+              message: "Resource does not exist."
+              timestamp: "2026-11-06T19:30:00Z"
+
+    InternalServerError:
+      description: Unexpected internal server error.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: "INTERNAL_SERVER_ERROR"
+              message: "An unexpected error occurred while processing the request."
+              timestamp: "2026-11-06T19:30:00Z"
+
+  schemas:
+    HealthCheckResponse:
+      type: object
+      required:
+        - status
+        - timestamp
+        - uptimeSeconds
+        - latencyMs
+        - database
+        - version
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, down]
+        timestamp:
+          type: string
+          format: date-time
+        uptimeSeconds:
+          type: integer
+          minimum: 0
+        latencyMs:
+          type: number
+          format: float
+          description: Round-trip request processing latency.
+        database:
+          type: object
+          required:
+            - connected
+            - responseTimeMs
+          properties:
+            connected:
+              type: boolean
+            responseTimeMs:
+              type: number
+              format: float
+        version:
+          type: string
+          example: "1.0.0"
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          minLength: 8
+          maxLength: 128
+          format: password
+
+    LoginResponse:
+      type: object
+      required:
+        - accessToken
+        - tokenType
+        - expiresIn
+        - user
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+          example: "Bearer"
+        expiresIn:
+          type: integer
+          description: Token validity in seconds.
+          example: 3600
+        user:
+          type: object
+          required:
+            - id
+            - email
+            - role
+          properties:
+            id:
+              type: string
+              format: uuid
+            email:
+              type: string
+              format: email
+            role:
+              type: string
+              example: "sdet"
+
+    UserProfile:
+      type: object
+      required:
+        - id
+        - email
+        - fullName
+        - role
+        - organization
+        - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        fullName:
+          type: string
+        role:
+          type: string
+          enum: [admin, sdet, developer, viewer]
+        organization:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    RAGQueryRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          minLength: 3
+          maxLength: 1000
+        topK:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 3
+        temperature:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          default: 0.0
+
+    RetrievedContextChunk:
+      type: object
+      required:
+        - documentId
+        - content
+        - similarityScore
+      properties:
+        documentId:
+          type: string
+        content:
+          type: string
+        similarityScore:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+
+    RAGQueryResponse:
+      type: object
+      required:
+        - query
+        - answer
+        - model
+        - latencyMs
+        - retrievedContext
+        - tokenUsage
+      properties:
+        query:
+          type: string
+        answer:
+          type: string
+        model:
+          type: string
+        latencyMs:
+          type: number
+          format: float
+        retrievedContext:
+          type: array
+          items:
+            $ref: '#/components/schemas/RetrievedContextChunk'
+        tokenUsage:
+          type: object
+          required:
+            - promptTokens
+            - completionTokens
+            - totalTokens
+          properties:
+            promptTokens:
+              type: integer
+            completionTokens:
+              type: integer
+            totalTokens:
+              type: integer
+
+    SemanticEvaluationRequest:
+      type: object
+      required:
+        - testId
+        - generatedAnswer
+        - groundTruthAnswer
+        - retrievedContextChunks
+      properties:
+        testId:
+          type: string
+          example: "TC-AI-001"
+        generatedAnswer:
+          type: string
+        groundTruthAnswer:
+          type: string
+        retrievedContextChunks:
+          type: array
+          items:
+            type: string
+        similarityThreshold:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          default: 0.80
+        faithfulnessThreshold:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+          default: 0.85
+
+    HallucinatedClaim:
+      type: object
+      required:
+        - claim
+        - reason
+      properties:
+        claim:
+          type: string
+          description: Factual assertion not entailed by the context chunks.
+        reason:
+          type: string
+          description: Diagnostic justification.
+
+    SemanticEvaluationResponse:
+      type: object
+      required:
+        - testId
+        - cosineSimilarity
+        - faithfulnessScore
+        - passedThreshold
+        - hallucinatedClaims
+        - evaluationDurationMs
+      properties:
+        testId:
+          type: string
+        cosineSimilarity:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+        faithfulnessScore:
+          type: number
+          format: float
+          minimum: 0.0
+          maximum: 1.0
+        passedThreshold:
+          type: boolean
+        hallucinatedClaims:
+          type: array
+          items:
+            $ref: '#/components/schemas/HallucinatedClaim'
+        evaluationDurationMs:
+          type: number
+          format: float
+
+    LayerExecutionResult:
+      type: object
+      required:
+        - layer
+        - status
+        - durationMs
+        - totalTests
+        - passedTests
+        - failedTests
+      properties:
+        layer:
+          type: string
+          enum: [UI, API, AI_EVAL]
+        status:
+          type: string
+          enum: [PASSED, FAILED, SKIPPED]
+        durationMs:
+          type: integer
+        totalTests:
+          type: integer
+        passedTests:
+          type: integer
+        failedTests:
+          type: integer
+
+    TestRunCreateRequest:
+      type: object
+      required:
+        - commitSha
+        - branch
+        - triggeredBy
+        - environment
+        - layers
+      properties:
+        commitSha:
+          type: string
+          minLength: 7
+          maxLength: 40
+        branch:
+          type: string
+        triggeredBy:
+          type: string
+          enum: [github-actions, local-cli, scheduled-cron]
+        environment:
+          type: string
+          enum: [local, staging, production]
+        layers:
+          type: array
+          items:
+            type: string
+            enum: [UI, API, AI_EVAL]
+
+    TestRun:
+      type: object
+      required:
+        - runId
+        - commitSha
+        - branch
+        - status
+        - environment
+        - startTime
+        - layers
+      properties:
+        runId:
+          type: string
+          format: uuid
+        commitSha:
+          type: string
+        branch:
+          type: string
+        status:
+          type: string
+          enum: [PASSED, FAILED, RUNNING]
+        environment:
+          type: string
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        reportUrl:
+          type: string
+          format: uri
+        layers:
+          type: array
+          items:
+            $ref: '#/components/schemas/LayerExecutionResult'
+
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          required:
+            - code
+            - message
+            - timestamp
+          properties:
+            code:
+              type: string
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+            details:
+              type: array
+              items:
+                type: string
+            timestamp:
+              type: string
+              format: date-time
