@@ -16,14 +16,14 @@ Design the testing strategy **BEFORE** writing code. Analyze Epics and Stories f
 ## Prerequisites
 
 - Previous phases completed:
-  - Product Backlog in Jira
+  - Product Backlog in the decided project management tool (Jira, Linear, GitHub Projects, Azure DevOps, etc)
   - `.context/PBI/` structure with Epics and Stories
 - Business context:
   - `.context/idea/business-model.md`
   - `.context/PRD/*.md`
 - Technical context:
   - `.context/SRS/*.md`
-- Atlassian MCP available
+- Project management information connection available (MCP, CLI, API REST).
 
 ---
 
@@ -40,13 +40,13 @@ Design the testing strategy **BEFORE** writing code. Analyze Epics and Stories f
 
 Before full planning, `acceptance-test-plan.md` runs a triage:
 
-| Decision | Result |
-|----------|--------|
-| **SKIP veto** (backend-only, infra, docs, CSS, tech debt) | Code Review only — no test plan |
-| **REQUIRE veto** (money, data integrity, auth, integrations) | Full Testing — skip risk scoring |
-| **Risk Score 0-3** (LOW) | Code Review only |
-| **Risk Score 4-7** (MEDIUM) | Full Testing (standard workflow) |
-| **Risk Score 8+** (HIGH) | Full Testing + extended edge cases |
+| Decision                                                     | Result                             |
+| ------------------------------------------------------------ | ---------------------------------- |
+| **SKIP veto** (backend-only, infra, docs, CSS, tech debt)    | Code Review only — no test plan    |
+| **REQUIRE veto** (money, data integrity, auth, integrations) | Full Testing — skip risk scoring   |
+| **Risk Score 0-3** (LOW)                                     | Code Review only                   |
+| **Risk Score 4-7** (MEDIUM)                                  | Full Testing (standard workflow)   |
+| **Risk Score 8+** (HIGH)                                     | Full Testing + extended edge cases |
 
 ---
 
@@ -54,17 +54,17 @@ Before full planning, `acceptance-test-plan.md` runs a triage:
 
 ### Entry Criteria
 
-- [ ] User Story exists in Jira with Acceptance Criteria
+- [ ] User Story exists in the project management tool with Acceptance Criteria
 - [ ] Epic context available (`.context/PBI/epics/EPIC-*/epic.md`)
 - [ ] Business context loaded (`PRD/`, `idea/`)
-- [ ] Atlassian MCP configured and accessible
+- [ ] Project management information connection available (MCP, CLI, API REST).
 
 ### Exit Criteria
 
 - [ ] Feature Test Plan generated (if Epic-level)
 - [ ] Acceptance Test Plan generated with test cases
 - [ ] Triage decision documented (SKIP / Code Review / Full Testing)
-- [ ] Jira comment posted with test plan
+- [ ] Project management tool comment posted with test plan
 - [ ] Local mirror files created in `.context/PBI/`
 
 ---
@@ -72,11 +72,11 @@ Before full planning, `acceptance-test-plan.md` runs a triage:
 ## Execution Flow
 
 ```
-Epic in Jira + Local
+Epic in project management tool + Local
         ↓
-┌───────────────────────────────────────┐
+┌───────────────────────────────────-────┐
 │  [1] Feature Test Plan (Epic)          │
-├───────────────────────────────────────┤
+├────────────────────────────────────-───┤
 │                                        │
 │  Input:                                │
 │  - Local epic path                     │
@@ -91,14 +91,14 @@ Epic in Jira + Local
 │                                        │
 │  Output:                               │
 │  - feature-test-plan.md (local)        │
-│  - Comment in Epic (Jira)              │
+│  - Comment in Epic (PM Tool)           │
 │  - Epic updated with findings          │
 │                                        │
-└───────────────────────────────────────┘
+└─────────────────────────────────────-──┘
         ↓
-┌───────────────────────────────────────┐
+┌──────────────────────────────────────-─┐
 │  [2] Acceptance Test Plan (Story)      │
-├───────────────────────────────────────┤
+├───────────────────────────────────────-┤
 │                                        │
 │  Input:                                │
 │  - Local story path                    │
@@ -116,7 +116,7 @@ Epic in Jira + Local
 │  - Comment in Story (Jira)             │
 │  - Story refined with testable ACs     │
 │                                        │
-└───────────────────────────────────────┘
+└──-─────────────────────────────────────┘
 ```
 
 ---
@@ -124,13 +124,13 @@ Epic in Jira + Local
 ## Testing Levels (IQL Hierarchy)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
+┌─────────────────────────────────────────────────────────-────┐
 │                    SHIFT-LEFT TESTING                        │
 │                    Step 1: Requirements Analysis             │
-├─────────────────────────────────────────────────────────────┤
+├─────────────────────────────────────────────────────────────-┤
 │                                                              │
-│   [1a] EPIC LEVEL (First)          [1b] STORY LEVEL (After) │
-│   ────────────────────────         ─────────────────────────│
+│   [1a] EPIC LEVEL (First)          [1b] STORY LEVEL (After)  │
+│   ────────────────────────         ──────────────────────-───│
 │                                                              │
 │   FTP (Feature Test Plan)          ATP (Acceptance Test Plan)│
 │   - Risks                          - Scenarios per AC        │
@@ -148,7 +148,7 @@ Epic in Jira + Local
 │                                        ↓                     │
 │                              KATA Automation (Steps 8-10)    │
 │                                                              │
-└─────────────────────────────────────────────────────────────┘
+└─────────────────────────────────────────────────────────────-┘
 ```
 
 > **Important order:** FTP is created FIRST (macro context), ATP is created AFTER (informed by FTP). Both occur BEFORE sprint during refinement.
@@ -172,20 +172,20 @@ Epic in Jira + Local
 
 ---
 
-## Jira-First Workflow
+## Project management Tool-First Workflow
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│               JIRA-FIRST → LOCAL MIRROR                      │
+│               PM TOOL-FIRST → LOCAL MIRROR                  │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  1. Read local Epic/Story (get Jira Key)                    │
-│  2. Read current Epic/Story from Jira (MCP)                 │
+│                                                             │
+│  1. Read local Epic/Story (get PM Tool Key)                 │
+│  2. Read current Epic/Story from PM Tool                    │
 │  3. Analyze with PRD + SRS context                          │
-│  4. Update Epic/Story in Jira with findings (MCP)           │
-│  5. Add comment with test plan/cases (MCP)                  │
+│  4. Update Epic/Story in PM Tool with findings              │
+│  5. Add comment with test plan/cases                        │
 │  6. Generate local file (mirror)                            │
-│                                                              │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 

@@ -55,13 +55,13 @@ Fase 11 (Test Automation - Integration/E2E)
 
 ## 📚 Prompts disponibles
 
-| Prompt                             | Cuándo usarlo                       | Propósito                              | Duración  |
-| ---------------------------------- | ----------------------------------- | -------------------------------------- | --------- |
-| **`implement-story.md`** ⭐        | Iniciar story desde cero            | Implementar funcionalidad completa     | 1-4 hours |
-| **`unit-testing.md`** ⭐           | Durante/después de implementación   | Crear unit tests para lógica crítica   | 30-90 min |
-| **`bug-fix-workflow.md`** ⭐       | Bug/Defect reportado en Jira        | Workflow completo: triage, fix, document | 30-90 min |
-| **`continue-implementation.md`**   | Retomar story pausada               | Continuar desde donde quedó            | Variable  |
-| **`fix-issues.md`**                | Debuggear errores durante desarrollo| Corregir bugs encontrados localmente   | Variable  |
+| Prompt                           | Cuándo usarlo                        | Propósito                                | Duración  |
+| -------------------------------- | ------------------------------------ | ---------------------------------------- | --------- |
+| **`implement-story.md`** ⭐       | Iniciar story desde cero             | Implementar funcionalidad completa       | 1-4 hours |
+| **`unit-testing.md`** ⭐          | Durante/después de implementación    | Crear unit tests para lógica crítica     | 30-90 min |
+| **`bug-fix-workflow.md`** ⭐      | Bug/Defect reportado en PM tool      | Workflow completo: triage, fix, document | 30-90 min |
+| **`continue-implementation.md`** | Retomar story pausada                | Continuar desde donde quedó              | Variable  |
+| **`fix-issues.md`**              | Debuggear errores durante desarrollo | Corregir bugs encontrados localmente     | Variable  |
 
 ---
 
@@ -111,19 +111,19 @@ Use: fix-issues.md
 Use: unit-testing.md
 ```
 
-### Escenario 4: Bug/Defect reportado en Jira (desde QA o Producción)
+### Escenario 4: Bug/Defect reportado en PM tool (desde QA o Producción)
 
 ```bash
-# 1. Bug reportado en Jira por QA o usuarios
+# 1. Bug reportado en PM tool por QA o usuarios
 Use: bug-fix-workflow.md
 
 # 2. La IA:
-#    - Lee contexto completo de Jira (issue + comentarios)
+#    - Lee contexto completo de PM tool (issue + comentarios)
 #    - Reproduce el bug
 #    - Hace triage (real bug vs WAD vs duplicate)
 #    - Implementa fix mínimo
 #    - Crea branch, commit, PR
-#    - Documenta en Jira
+#    - Documenta en PM tool
 
 # 3. Si es HOTFIX (crítico en producción):
 #    - Branch: hotfix/ISSUE-KEY/...

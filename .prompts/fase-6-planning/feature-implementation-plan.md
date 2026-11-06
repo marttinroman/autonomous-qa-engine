@@ -436,12 +436,17 @@ Todas las stories de esta feature usan vocabulario consistente del dominio, refl
 
 ---
 
-## 📤 SINCRONIZACIÓN CON JIRA (Condicional - UPEX Workspace)
+## 📤 SINCRONIZACIÓN CON Project Management Tool
+
+El siguiente ejemplo se explica con JIRA (Condicional - UPEX Workspace).
+
+Para las features utilizar el mejor "project management tool" seleccionado en:
+'.prompts/fase-4-specification/fase-4-project-tool-eval.md'.
 
 ### Custom Field para Feature Implementation Plan
 
-| Field ID            | Nombre                              | Tipo     | Nivel |
-| ------------------- | ----------------------------------- | -------- | ----- |
+| Field ID            | Nombre                             | Tipo     | Nivel |
+| ------------------- | ---------------------------------- | -------- | ----- |
 | `customfield_10043` | Feature Implementation Plan (Dev)🛠️ | Textarea | Epic  |
 
 ### Instrucciones de Sincronización
@@ -497,4 +502,4 @@ Todas las stories de esta feature usan vocabulario consistente del dominio, refl
 - Dependencias compartidas claras
 - Orden de implementación lógico
 - Riesgos identificados con mitigaciones
-- **Sincronizar con Jira después de generar archivo local**
+- **Sincronizar con project management tool después de generar archivo local**

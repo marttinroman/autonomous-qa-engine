@@ -86,15 +86,15 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 
 **Acceptance Test Plan (Test Cases):** Usar el siguiente orden de descubrimiento:
 
-1. **Jira Comments** (preferido): Buscar en comentarios de la US usando `[ISSUE_TRACKER_TOOL]` para obtener el issue con `comment_limit: 50`
-2. **Jira Custom Field**: Campo `customfield_12400` ("Acceptance Test Plan (QA)🧪") usando `fields: "*all"`
+1. **PM tool Comments** (preferido): Buscar en comentarios de la US usando `[ISSUE_TRACKER_TOOL]` para obtener el issue con `comment_limit: 50`
+2. **PM tool Custom Field**: Campo `customfield_12400` ("Acceptance Test Plan (QA)🧪") usando `fields: "*all"`
 3. **Archivo Local** (fallback): `.context/.../stories/.../test-cases.md` o `acceptance-test-plan.md`
 
 **Propósito:**
 
 - Entender **qué** implementar (Acceptance Criteria)
 - Entender **cómo** implementarlo (pasos técnicos)
-- Entender **qué validar** después (Test Cases de Jira)
+- Entender **qué validar** después (Test Cases de PM tool)
 
 ### 2. Guidelines de Desarrollo (DEV):
 
@@ -142,6 +142,17 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
 
 ## 🚀 PROCESO DE IMPLEMENTACIÓN
 
+### Paso 0: Actualizar Estado en Project Management Tool to (In Progress)
+Nota: Esta seccion usa "gh" solo como ejemplo. A efectos de ejecucion tener en cuenta el PM tool seleecionado para el proyecto.
+
+**Al iniciar la implementación de la historia:**
+- Obtener el ID del item en el tablero **Nombre de proyecto** (`gh project item-list 1 --owner "username"`).
+- Actualizar el campo **Status** a **"In Progress"** usando `gh project item-edit`:
+  ```bash
+  gh project item-edit --id "{ITEM_ID}" --field-id "field_id_value" --single-select-option-id "single-select-option-id_value" --project-id "project-id_value"
+  ```
+
+
 ### Paso 1: Análisis y Comprensión
 
 1. **Lee `implementation-plan.md` completo**
@@ -155,7 +166,7 @@ Puedo continuar, pero usaré conocimiento interno (puede estar desactualizado).
    - Entiende el "por qué"
 
 3. **Revisa los Test Cases (Acceptance Test Plan)**
-   - Usar orden de descubrimiento: Jira Comments → Jira `customfield_12400` → Archivo local
+   - Usar orden de descubrimiento: PM tool Comments → PM tool `customfield_12400` → Archivo local
    - Entiende qué se espera que funcione
    - Identifica edge cases a considerar
    - Usa los test cases como checklist durante la implementación
@@ -419,6 +430,19 @@ npm run build  # o: bun run build
 - ✅ AC1: [Descripción]
 - ✅ AC2: [Descripción]
 - ✅ AC3: [Descripción]
+
+### 📤 Actualizar Estado en Project Management Tool (Done):
+Nota: Esta seccion usa "gh" solo como ejemplo. A efectos de ejecucion tener en cuenta el PM tool seleecionado para el proyecto.
+
+**Al concluir la verificación y etiquetas:**
+
+1. **En Disco Local:** Marcar todas las casillas del **Definition of Done Checklist** con `[x]` dentro de `implementation-plan.
+2. **Etiqueta Issue/Item:** Agregar la etiqueta `implemented` a la User Story (`gh issue edit {ISSUE_NUM} --add-label "implemented"`).
+3. **Etiqueta Épica:** Si todas las User Stories pertenecientes a una Épica tienen la etiqueta `implemented`, agregar automáticamente la etiqueta `implemented` a la Épica correspondencia (`gh issue edit {EPIC_NUM} --add-label "implemented"`).
+2. **En Projects tool:** Mantener el campo **Status** en **"In Progress"** (o actualizar a **"In Progress"** si no lo estaba). Los items solo pasarán a **"Done"** una vez desplegados a producción en la **Fase 13 (Production Deployment)**:
+  ```bash
+  gh project item-edit --id "{ITEM_ID}" --field-id "field_id_value" --single-select-option-id "single-select-option-id_value" --project-id "project-id_value"
+  ```
 
 ### 🧪 Validación manual realizada:
 

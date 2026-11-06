@@ -1,3 +1,6 @@
+Following the guidelines in:
+".prompts/fase-2-architecture/README.md"
+
 Execute:
 ".prompts/fase-2-architecture/prd-executive-summary.md".
 

@@ -24,14 +24,14 @@ La **Fase 3: Infrastructure** implementa la base técnica del proyecto ANTES de 
 
 ## 📋 Prompts de esta Fase
 
-| #   | Archivo             | Descripción                                                 | Duración   | MCP Requerido         |
-| --- | ------------------- | ----------------------------------------------------------- | ---------- | --------------------- |
+| #   | Archivo             | Descripción                                                 | Duración   | MCP Requerido        |
+| --- | ------------------- | ----------------------------------------------------------- | ---------- | -------------------- |
 | 1   | `backend-setup.md`  | Crear DB schemas, Auth, API layer, seed data                | 45-90 min  | ✅ Supabase, Context7 |
 | 2   | `frontend-setup.md` | Design System, Layout, páginas demo, integrar tipos backend | 60-120 min | ✅ Context7           |
 
 **Total estimado:** 2-3.5 horas (depende de complejidad del proyecto)
 
-> **Tip:** Para documentación del proyecto (README + System Prompt para AI), usa el prompt standalone `project-doc-setup.md` ubicado en `.prompts/`.
+> **Tip:** Para documentación del proyecto (README + System Prompt para AI), usa el prompt standalone `project-doc-setup.md` ubicado en `.prompts/setup/`.
 
 ---
 
@@ -80,8 +80,8 @@ Esta fase requiere los siguientes MCP tools configurados:
 
 | MCP Tool         | Fase que lo usa                     | ¿Obligatorio? | Propósito                                           |
 | ---------------- | ----------------------------------- | ------------- | --------------------------------------------------- |
-| **Supabase MCP** | backend-setup.md                    | ✅ CRÍTICO    | Crear tablas, RLS policies, gestionar DB            |
-| **Context7 MCP** | backend-setup.md, frontend-setup.md | ✅ CRÍTICO    | Consultar docs oficiales antes de instalar paquetes |
+| **Supabase MCP** | backend-setup.md                    | ✅ CRÍTICO     | Crear tablas, RLS policies, gestionar DB            |
+| **Context7 MCP** | backend-setup.md, frontend-setup.md | ✅ CRÍTICO     | Consultar docs oficiales antes de instalar paquetes |
 
 **Verificar MCP disponibles:**
 

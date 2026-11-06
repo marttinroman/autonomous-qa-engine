@@ -4,6 +4,8 @@
 
 ---
 
+**Important:** This prompt is primarily configured for the **UPEX Galaxy Jira Workspace**. The custom field IDs below are shared across all projects in this workspace. For external workspaces, see the **Fallback Strategy** section. For precice current project minformation read and follow ".prompts/fase-7-implementation/fase-7-criteria.md".
+
 ## Purpose
 
 Analyze, triage, and fix bugs/defects reported during exploratory testing or production. This prompt helps the AI:
@@ -25,8 +27,6 @@ Analyze, triage, and fix bugs/defects reported during exploratory testing or pro
 - Optional: Browser testing tools (e.g., Playwright MCP)
 - Optional: API testing tools (e.g., Postman MCP)
 - Optional: Context7 MCP for library documentation
-
-**Important:** This prompt is primarily configured for the **UPEX Galaxy Jira Workspace**. The custom field IDs below are shared across all projects in this workspace. For external workspaces, see the **Fallback Strategy** section.
 
 ---
 
@@ -117,15 +117,15 @@ This workflow requires GitHub CLI for:
 
 ### Bug Fields Reference
 
-| Field ID            | Jira Field Name         | Type     | Values/Usage                                                                          |
-| ------------------- | ----------------------- | -------- | ------------------------------------------------------------------------------------- |
-| `customfield_10109` | 🐞 Actual Result        | Textarea | What happened (the bug behavior)                                                      |
-| `customfield_10110` | ✅ Expected Result      | Textarea | What should have happened                                                             |
-| `customfield_10112` | Error Type              | Dropdown | Functional/Visual/Content/Performance/Crash/Data/Integration/Security                |
-| `customfield_10116` | SEVERITY                | Dropdown | Crítica/Mayor/Moderada/Menor/Trivial                                                  |
-| `customfield_12210` | Test Environment        | Dropdown | Dev/QA/UAT/Staging/Production                                                         |
-| `customfield_10701` | Root Cause🐞            | Dropdown | Code Error/Config-Env Error/Environment Error/Requirement Error/WAD/Third-Party/etc. |
-| `customfield_12212` | Fix                     | Radio    | Bugfix (standard) / Hotfix (critical, immediate deploy)                               |
+| Field ID            | Jira Field Name   | Type     | Values/Usage                                                                         |
+| ------------------- | ----------------- | -------- | ------------------------------------------------------------------------------------ |
+| `customfield_10109` | 🐞 Actual Result   | Textarea | What happened (the bug behavior)                                                     |
+| `customfield_10110` | ✅ Expected Result | Textarea | What should have happened                                                            |
+| `customfield_10112` | Error Type        | Dropdown | Functional/Visual/Content/Performance/Crash/Data/Integration/Security                |
+| `customfield_10116` | SEVERITY          | Dropdown | Crítica/Mayor/Moderada/Menor/Trivial                                                 |
+| `customfield_12210` | Test Environment  | Dropdown | Dev/QA/UAT/Staging/Production                                                        |
+| `customfield_10701` | Root Cause🐞       | Dropdown | Code Error/Config-Env Error/Environment Error/Requirement Error/WAD/Third-Party/etc. |
+| `customfield_12212` | Fix               | Radio    | Bugfix (standard) / Hotfix (critical, immediate deploy)                              |
 
 ### Root Cause Categories
 
@@ -254,10 +254,10 @@ Check issue links for:
 
 **Default branching pattern (user can override):**
 
-| Type       | Branch Pattern                         | Target      |
-| ---------- | -------------------------------------- | ----------- |
-| **Bugfix** | `fix/{ISSUE_KEY}/{short-description}`  | staging     |
-| **Hotfix** | `hotfix/{ISSUE_KEY}/{short-description}` | main      |
+| Type       | Branch Pattern                           | Target  |
+| ---------- | ---------------------------------------- | ------- |
+| **Bugfix** | `fix/{ISSUE_KEY}/{short-description}`    | staging |
+| **Hotfix** | `hotfix/{ISSUE_KEY}/{short-description}` | main    |
 
 **Ask user if they have a different git strategy before creating branches.**
 
@@ -310,12 +310,12 @@ Use [ISSUE_TRACKER_TOOL] to get issue:
 **Assignee:** [Assignee or Unassigned]
 
 **Classification:**
-| Field           | Value           |
-| --------------- | --------------- |
-| Error Type      | [Type]          |
-| Severity        | [Severity]      |
-| Environment     | [Environment]   |
-| Priority        | [Priority]      |
+| Field       | Value         |
+| ----------- | ------------- |
+| Error Type  | [Type]        |
+| Severity    | [Severity]    |
+| Environment | [Environment] |
+| Priority    | [Priority]    |
 
 **Steps to Reproduce:**
 1. [Step 1]
@@ -371,12 +371,12 @@ Which would you prefer?
 
 **Reproduction approach by bug type:**
 
-| Bug Type          | Reproduction Method                           |
-| ----------------- | --------------------------------------------- |
-| **UI Bug**        | Browser testing tools (if available)          |
-| **API Bug**       | API testing tools or curl commands            |
-| **Code/Logic Bug**| Code inspection and trace                     |
-| **Data Bug**      | Database queries or API verification          |
+| Bug Type           | Reproduction Method                  |
+| ------------------ | ------------------------------------ |
+| **UI Bug**         | Browser testing tools (if available) |
+| **API Bug**        | API testing tools or curl commands   |
+| **Code/Logic Bug** | Code inspection and trace            |
+| **Data Bug**       | Database queries or API verification |
 
 **For UI Bugs (if browser tools available):**
 
@@ -442,14 +442,14 @@ Which would you prefer?
 
 **Decision Matrix:**
 
-| Finding                        | Action                           | Jira Transition         |
-| ------------------------------ | -------------------------------- | ----------------------- |
-| Real bug, reproducible         | Proceed to fix                   | → In Progress           |
-| Duplicate of existing bug      | Link and close                   | → Duplicate             |
-| Not a bug (works as designed)  | Document reasoning               | → Won't Fix (WAD)       |
-| Enhancement request            | Reclassify as enhancement        | → Enhancement / Backlog |
-| Cannot reproduce               | Request more info or close       | → Need Info / Cannot Reproduce |
-| Deferred (low priority/risk)   | Document and defer               | → Deferred              |
+| Finding                       | Action                     | Jira Transition                |
+| ----------------------------- | -------------------------- | ------------------------------ |
+| Real bug, reproducible        | Proceed to fix             | → In Progress                  |
+| Duplicate of existing bug     | Link and close             | → Duplicate                    |
+| Not a bug (works as designed) | Document reasoning         | → Won't Fix (WAD)              |
+| Enhancement request           | Reclassify as enhancement  | → Enhancement / Backlog        |
+| Cannot reproduce              | Request more info or close | → Need Info / Cannot Reproduce |
+| Deferred (low priority/risk)  | Document and defer         | → Deferred                     |
 
 **For "Real Bug" - Check if Hotfix needed:**
 
@@ -556,10 +556,10 @@ git checkout -b hotfix/[ISSUE_KEY]/[short-description]
 ## Fix Implementation
 
 **Files Modified:**
-| File | Change Description |
-| ---- | ------------------ |
-| `[file1.ts]` | [What changed] |
-| `[file2.ts]` | [What changed] |
+| File         | Change Description |
+| ------------ | ------------------ |
+| `[file1.ts]` | [What changed]     |
+| `[file2.ts]` | [What changed]     |
 
 **Before (problematic code):**
 ```[language]
@@ -693,8 +693,8 @@ Fixes [ISSUE_KEY]: [Bug summary from Jira]
 
 ### Changes
 
-| File | Change |
-| ---- | ------ |
+| File       | Change        |
+| ---------- | ------------- |
 | `file1.ts` | [description] |
 | `file2.ts` | [description] |
 
@@ -813,16 +813,16 @@ Use [ISSUE_TRACKER_TOOL] to get issue:
 
 **Evaluation Criteria:**
 
-| Aspect              | Good                              | Needs Improvement              |
-| ------------------- | --------------------------------- | ------------------------------ |
-| Steps to Reproduce  | Clear, numbered, reproducible     | Vague, missing steps           |
-| Expected vs Actual  | Specific, measurable              | Generic, unclear               |
-| Error Type          | Correctly categorized             | Misclassified                  |
-| Severity            | Appropriate to impact             | Over/under estimated           |
-| Environment         | Specified correctly               | Missing or incorrect           |
-| Evidence            | Screenshots, logs attached        | No evidence                    |
-| User Story Link     | Linked to related story           | No traceability                |
-| Title               | Follows nomenclature              | Unclear or too vague           |
+| Aspect             | Good                          | Needs Improvement    |
+| ------------------ | ----------------------------- | -------------------- |
+| Steps to Reproduce | Clear, numbered, reproducible | Vague, missing steps |
+| Expected vs Actual | Specific, measurable          | Generic, unclear     |
+| Error Type         | Correctly categorized         | Misclassified        |
+| Severity           | Appropriate to impact         | Over/under estimated |
+| Environment        | Specified correctly           | Missing or incorrect |
+| Evidence           | Screenshots, logs attached    | No evidence          |
+| User Story Link    | Linked to related story       | No traceability      |
+| Title              | Follows nomenclature          | Unclear or too vague |
 
 **Feedback Comment Template:**
 
@@ -836,14 +836,14 @@ Use [ISSUE_TRACKER_TOOL] to get issue:
 ### 🔧 Oportunidades de mejora
 
 **Custom Fields:**
-| Campo | Estado | Comentario |
-|-------|--------|------------|
-| 🐞 Actual Result | ✅/⚠️/❌ | [Comentario] |
-| ✅ Expected Result | ✅/⚠️/❌ | [Comentario] |
-| Error Type | ✅/⚠️/❌ | [Comentario] |
-| SEVERITY | ✅/⚠️/❌ | [Comentario] |
-| Test Environment | ✅/⚠️/❌ | [Comentario] |
-| Root Cause🐞 | ⚠️ N/A | [Se llena después del fix] |
+| Campo             | Estado | Comentario                 |
+| ----------------- | ------ | -------------------------- |
+| 🐞 Actual Result   | ✅/⚠️/❌  | [Comentario]               |
+| ✅ Expected Result | ✅/⚠️/❌  | [Comentario]               |
+| Error Type        | ✅/⚠️/❌  | [Comentario]               |
+| SEVERITY          | ✅/⚠️/❌  | [Comentario]               |
+| Test Environment  | ✅/⚠️/❌  | [Comentario]               |
+| Root Cause🐞       | ⚠️ N/A  | [Se llena después del fix] |
 
 **Estructura del Reporte:**
 - [ ] Steps to reproduce claros y numerados
@@ -888,8 +888,8 @@ Referencia: `.prompts/fase-10-exploratory-testing/bug-report.md`
 **Fix Type:** Bugfix / Hotfix
 
 **Changes:**
-| File | Change |
-| ---- | ------ |
+| File      | Change         |
+| --------- | -------------- |
 | `[file1]` | [What changed] |
 | `[file2]` | [What changed] |
 
@@ -1094,8 +1094,8 @@ git push origin staging
 [Brief explanation of minimal fix]
 
 ### Changes
-| File | Change |
-| ---- | ------ |
+| File      | Change        |
+| --------- | ------------- |
 | `file.ts` | [description] |
 
 ### Testing
@@ -1290,46 +1290,46 @@ After completing the workflow, present this consolidated report to the user in t
 ```markdown
 ## ✅ [ISSUE_KEY] - FIX COMPLETADO
 
-| Aspecto              | Detalle                                                    |
-|----------------------|------------------------------------------------------------|
-| Issue Key            | [ISSUE_KEY]                                                |
-| Título               | [Bug summary/title]                                        |
-| Estado Final         | Ready For QA                                               |
-| Asignado a           | [Tester name] (reporter/tester original)                   |
-| Branch               | `fix/[ISSUE_KEY]/[description]`                            |
-| Commit               | [Full commit URL - clickeable]                             |
-| PR                   | [PR URL - clickeable] (si aplica)                          |
-| Archivos Modificados | [List of modified files]                                   |
-| Causa Raíz           | [Category]: [Brief explanation]                            |
-| URL Jira             | [Full Jira URL - clickeable]                               |
+| Aspecto              | Detalle                                  |
+| -------------------- | ---------------------------------------- |
+| Issue Key            | [ISSUE_KEY]                              |
+| Título               | [Bug summary/title]                      |
+| Estado Final         | Ready For QA                             |
+| Asignado a           | [Tester name] (reporter/tester original) |
+| Branch               | `fix/[ISSUE_KEY]/[description]`          |
+| Commit               | [Full commit URL - clickeable]           |
+| PR                   | [PR URL - clickeable] (si aplica)        |
+| Archivos Modificados | [List of modified files]                 |
+| Causa Raíz           | [Category]: [Brief explanation]          |
+| URL Jira             | [Full Jira URL - clickeable]             |
 
 ---
 
 ### Acciones Realizadas
 
-| Acción             | Detalle                                                  |
-|--------------------|----------------------------------------------------------|
-| Jira - Read        | `jira_get_issue` [ISSUE_KEY] (con comentarios/changelog) |
-| Jira - Transition  | [Status inicial] → In Progress → Ready For QA            |
-| Jira - Fields      | Root Cause, Fix Type actualizados                        |
-| Jira - Comments    | [N] comentarios añadidos (Fix documentation [+ Feedback])|
-| Jira - Assign      | Asignado a [Tester name] para re-test                    |
-| Git - Branch       | `fix/[ISSUE_KEY]/[description]`                          |
-| Git - Commit       | `fix([ISSUE_KEY]): [commit message]`                     |
-| Git - Push         | → [target branch: staging/main]                          |
-| Verificación       | typecheck ✓, lint ✓, build ✓                             |
+| Acción            | Detalle                                                   |
+| ----------------- | --------------------------------------------------------- |
+| Jira - Read       | `jira_get_issue` [ISSUE_KEY] (con comentarios/changelog)  |
+| Jira - Transition | [Status inicial] → In Progress → Ready For QA             |
+| Jira - Fields     | Root Cause, Fix Type actualizados                         |
+| Jira - Comments   | [N] comentarios añadidos (Fix documentation [+ Feedback]) |
+| Jira - Assign     | Asignado a [Tester name] para re-test                     |
+| Git - Branch      | `fix/[ISSUE_KEY]/[description]`                           |
+| Git - Commit      | `fix([ISSUE_KEY]): [commit message]`                      |
+| Git - Push        | → [target branch: staging/main]                           |
+| Verificación      | typecheck ✓, lint ✓, build ✓                              |
 
 ---
 
 ### Triage Assessment
 
-| Criterio              | Resultado                                               |
-|-----------------------|---------------------------------------------------------|
-| ¿Es realmente un bug? | ✅ Sí / ⚠️ Parcial / ❌ No (es enhancement)             |
-| ¿Alineado con AC?     | [Sí/No - referencia AC si existe]                       |
-| ¿Reproducible?        | ✅ Sí / ⚠️ Intermitente / ❌ No                         |
-| Tipo de Fix           | Bugfix / Hotfix                                         |
-| Decisión              | [Breve explicación de la decisión tomada]               |
+| Criterio              | Resultado                                 |
+| --------------------- | ----------------------------------------- |
+| ¿Es realmente un bug? | ✅ Sí / ⚠️ Parcial / ❌ No (es enhancement)  |
+| ¿Alineado con AC?     | [Sí/No - referencia AC si existe]         |
+| ¿Reproducible?        | ✅ Sí / ⚠️ Intermitente / ❌ No              |
+| Tipo de Fix           | Bugfix / Hotfix                           |
+| Decisión              | [Breve explicación de la decisión tomada] |
 
 **Análisis:**
 [1-2 párrafos explicando:
@@ -1371,21 +1371,21 @@ Add this banner at the top:
 ```markdown
 ## 🔗 [ISSUE_KEY] - DUPLICADO
 
-| Aspecto        | Detalle                                |
-|----------------|----------------------------------------|
-| Issue Key      | [ISSUE_KEY]                            |
-| Duplicado de   | [EXISTING_ISSUE_KEY]                   |
-| Estado Final   | Duplicate                              |
-| URL Jira       | [Jira URL]                             |
+| Aspecto      | Detalle              |
+| ------------ | -------------------- |
+| Issue Key    | [ISSUE_KEY]          |
+| Duplicado de | [EXISTING_ISSUE_KEY] |
+| Estado Final | Duplicate            |
+| URL Jira     | [Jira URL]           |
 
 ### Acciones Realizadas
 
-| Acción            | Detalle                              |
-|-------------------|--------------------------------------|
-| Jira - Read       | `jira_get_issue` [ISSUE_KEY]         |
-| Jira - Link       | Linked to [EXISTING_ISSUE_KEY]       |
-| Jira - Transition | [Status] → Duplicate                 |
-| Jira - Comment    | Documented duplicate reasoning       |
+| Acción            | Detalle                        |
+| ----------------- | ------------------------------ |
+| Jira - Read       | `jira_get_issue` [ISSUE_KEY]   |
+| Jira - Link       | Linked to [EXISTING_ISSUE_KEY] |
+| Jira - Transition | [Status] → Duplicate           |
+| Jira - Comment    | Documented duplicate reasoning |
 
 **Análisis:** [Por qué es duplicado, qué issue tiene el fix/tracking]
 
@@ -1397,20 +1397,20 @@ Add this banner at the top:
 ```markdown
 ## ✅ [ISSUE_KEY] - CERRADO (WAD)
 
-| Aspecto        | Detalle                                |
-|----------------|----------------------------------------|
-| Issue Key      | [ISSUE_KEY]                            |
-| Resolución     | Working As Designed (WAD)              |
-| Estado Final   | Won't Fix                              |
-| URL Jira       | [Jira URL]                             |
+| Aspecto      | Detalle                   |
+| ------------ | ------------------------- |
+| Issue Key    | [ISSUE_KEY]               |
+| Resolución   | Working As Designed (WAD) |
+| Estado Final | Won't Fix                 |
+| URL Jira     | [Jira URL]                |
 
 ### Acciones Realizadas
 
-| Acción            | Detalle                              |
-|-------------------|--------------------------------------|
-| Jira - Read       | `jira_get_issue` [ISSUE_KEY]         |
-| Jira - Transition | [Status] → Won't Fix                 |
-| Jira - Comment    | Documented WAD reasoning             |
+| Acción            | Detalle                      |
+| ----------------- | ---------------------------- |
+| Jira - Read       | `jira_get_issue` [ISSUE_KEY] |
+| Jira - Transition | [Status] → Won't Fix         |
+| Jira - Comment    | Documented WAD reasoning     |
 
 **Análisis:**
 [Por qué no es un bug - referencia a AC, diseño, o documentación]
@@ -1423,20 +1423,20 @@ Add this banner at the top:
 ```markdown
 ## ❓ [ISSUE_KEY] - NO REPRODUCIBLE
 
-| Aspecto        | Detalle                                |
-|----------------|----------------------------------------|
-| Issue Key      | [ISSUE_KEY]                            |
-| Estado Final   | Need Info / Cannot Reproduce           |
-| Intentos       | [N] intentos de reproducción           |
-| URL Jira       | [Jira URL]                             |
+| Aspecto      | Detalle                      |
+| ------------ | ---------------------------- |
+| Issue Key    | [ISSUE_KEY]                  |
+| Estado Final | Need Info / Cannot Reproduce |
+| Intentos     | [N] intentos de reproducción |
+| URL Jira     | [Jira URL]                   |
 
 ### Acciones Realizadas
 
-| Acción            | Detalle                              |
-|-------------------|--------------------------------------|
-| Jira - Read       | `jira_get_issue` [ISSUE_KEY]         |
-| Jira - Comment    | Preguntas específicas al reporter    |
-| Jira - Transition | [Status] → Need Info                 |
+| Acción            | Detalle                           |
+| ----------------- | --------------------------------- |
+| Jira - Read       | `jira_get_issue` [ISSUE_KEY]      |
+| Jira - Comment    | Preguntas específicas al reporter |
+| Jira - Transition | [Status] → Need Info              |
 
 **Análisis:**
 [Qué se intentó, qué información falta, preguntas para el reporter]
@@ -1484,32 +1484,32 @@ Before presenting the final report, verify:
 
 ## Quick Reference: Tools
 
-| Action                    | Tool                                              |
-| ------------------------- | ------------------------------------------------- |
-| Read bug issue            | `[ISSUE_TRACKER_TOOL]` to get issue               |
-| Search for duplicates     | `[ISSUE_TRACKER_TOOL]` to search issues            |
-| Update custom fields      | `[ISSUE_TRACKER_TOOL]` to update issue             |
-| Add comment               | `[ISSUE_TRACKER_TOOL]` to add comment              |
-| Transition status         | `[ISSUE_TRACKER_TOOL]` to transition issue         |
-| Link issues               | `[ISSUE_TRACKER_TOOL]` to link issues              |
-| Search for fields         | `[ISSUE_TRACKER_TOOL]` to search fields            |
-| Navigate browser          | `[AUTOMATION_TOOL]` (if available)                 |
-| Take screenshot           | `[AUTOMATION_TOOL]` (if available)                 |
-| Check library docs        | `[DOCS_TOOL]`                                      |
+| Action                | Tool                                       |
+| --------------------- | ------------------------------------------ |
+| Read bug issue        | `[ISSUE_TRACKER_TOOL]` to get issue        |
+| Search for duplicates | `[ISSUE_TRACKER_TOOL]` to search issues    |
+| Update custom fields  | `[ISSUE_TRACKER_TOOL]` to update issue     |
+| Add comment           | `[ISSUE_TRACKER_TOOL]` to add comment      |
+| Transition status     | `[ISSUE_TRACKER_TOOL]` to transition issue |
+| Link issues           | `[ISSUE_TRACKER_TOOL]` to link issues      |
+| Search for fields     | `[ISSUE_TRACKER_TOOL]` to search fields    |
+| Navigate browser      | `[AUTOMATION_TOOL]` (if available)         |
+| Take screenshot       | `[AUTOMATION_TOOL]` (if available)         |
+| Check library docs    | `[DOCS_TOOL]`                              |
 
 ## Quick Reference: Jira Transition IDs (UPEX Galaxy)
 
 > **Note:** Transition IDs may vary by workspace. Use `[ISSUE_TRACKER_TOOL]` to get available transitions for a specific issue.
 
-| ID  | Transition Name | From → To                    |
-| --- | --------------- | ---------------------------- |
-| 121 | start fixing    | OPEN → In Progress           |
-| 5   | Hard pushed     | In Progress → Ready For QA   |
-| 141 | is not a Bug    | OPEN → Enhancement           |
-| 71  | is duplicated   | OPEN → Duplicated            |
-| 8   | is CNR          | OPEN → Cannot Reproduce      |
-| 111 | is WAD          | OPEN → Working As Designed   |
-| 51  | defer           | OPEN → Deferred              |
+| ID  | Transition Name | From → To                  |
+| --- | --------------- | -------------------------- |
+| 121 | start fixing    | OPEN → In Progress         |
+| 5   | Hard pushed     | In Progress → Ready For QA |
+| 141 | is not a Bug    | OPEN → Enhancement         |
+| 71  | is duplicated   | OPEN → Duplicated          |
+| 8   | is CNR          | OPEN → Cannot Reproduce    |
+| 111 | is WAD          | OPEN → Working As Designed |
+| 51  | defer           | OPEN → Deferred            |
 
 **Usage:**
 
@@ -1521,36 +1521,36 @@ Use [ISSUE_TRACKER_TOOL] to transition issue:
 
 ## Quick Reference: Git Commands
 
-| Action               | Command                                           |
-| -------------------- | ------------------------------------------------- |
-| Create fix branch    | `git checkout -b fix/ISSUE-KEY/description`       |
-| Create hotfix branch | `git checkout -b hotfix/ISSUE-KEY/description`    |
-| Stage changes        | `git add [files]`                                 |
-| Commit with message  | `git commit -m "fix(ISSUE-KEY): description"`     |
-| Push branch          | `git push -u origin [branch-name]`                |
-| Create PR            | `gh pr create --title "..." --body "..." --base [branch]` |
-| Cherry-pick (backport) | `git cherry-pick [commit-hash]`                 |
+| Action                 | Command                                                   |
+| ---------------------- | --------------------------------------------------------- |
+| Create fix branch      | `git checkout -b fix/ISSUE-KEY/description`               |
+| Create hotfix branch   | `git checkout -b hotfix/ISSUE-KEY/description`            |
+| Stage changes          | `git add [files]`                                         |
+| Commit with message    | `git commit -m "fix(ISSUE-KEY): description"`             |
+| Push branch            | `git push -u origin [branch-name]`                        |
+| Create PR              | `gh pr create --title "..." --body "..." --base [branch]` |
+| Cherry-pick (backport) | `git cherry-pick [commit-hash]`                           |
 
 ## Quick Reference: Code Quality Commands
 
-| Check      | Command (npm)        | Command (bun)        |
-| ---------- | -------------------- | -------------------- |
-| TypeScript | `npm run typecheck`  | `bun run typecheck`  |
-| Lint       | `npm run lint`       | `bun run lint`       |
-| Build      | `npm run build`      | `bun run build`      |
-| Test       | `npm run test`       | `bun run test`       |
+| Check      | Command (npm)       | Command (bun)       |
+| ---------- | ------------------- | ------------------- |
+| TypeScript | `npm run typecheck` | `bun run typecheck` |
+| Lint       | `npm run lint`      | `bun run lint`      |
+| Build      | `npm run build`     | `bun run build`     |
+| Test       | `npm run test`      | `bun run test`      |
 
 ---
 
 ## Related Prompts
 
-| Prompt                                             | When to Use                               |
-| -------------------------------------------------- | ----------------------------------------- |
-| `fase-10-exploratory-testing/bug-report.md`        | To understand how bugs should be reported |
-| `fase-10-exploratory-testing/exploratory-test.md`  | To re-test the bug fix (QA verification)  |
-| `fase-7-implementation/implement-story.md`         | For implementing new features             |
-| `fase-8-code-review/review-pr.md`                  | For code review of the fix PR             |
-| `git-flow.md`                                      | For advanced git operations               |
+| Prompt                                            | When to Use                               |
+| ------------------------------------------------- | ----------------------------------------- |
+| `fase-10-exploratory-testing/bug-report.md`       | To understand how bugs should be reported |
+| `fase-10-exploratory-testing/exploratory-test.md` | To re-test the bug fix (QA verification)  |
+| `fase-7-implementation/implement-story.md`        | For implementing new features             |
+| `fase-8-code-review/review-pr.md`                 | For code review of the fix PR             |
+| `git-flow.md`                                     | For advanced git operations               |
 
 ---
 
@@ -1584,12 +1584,12 @@ Use this table to track progress across multiple bugs:
 ```markdown
 ## Lista de Bugs - Sesión [DATE]
 
-| # | Key | Summary | Priority | Status | Resultado |
-|---|-----|---------|----------|--------|-----------|
-| 1 | [PROJ-XX] | [Summary] | Highest | OPEN | ⏳ Pendiente |
-| 2 | [PROJ-XX] | [Summary] | High | OPEN | ✅ Fixed |
-| 3 | [PROJ-XX] | [Summary] | Medium | OPEN | ❌ WAD |
-| 4 | [PROJ-XX] | [Summary] | Low | OPEN | 🔗 Duplicate |
+| #   | Key       | Summary   | Priority | Status | Resultado   |
+| --- | --------- | --------- | -------- | ------ | ----------- |
+| 1   | [PROJ-XX] | [Summary] | Highest  | OPEN   | ⏳ Pendiente |
+| 2   | [PROJ-XX] | [Summary] | High     | OPEN   | ✅ Fixed     |
+| 3   | [PROJ-XX] | [Summary] | Medium   | OPEN   | ❌ WAD       |
+| 4   | [PROJ-XX] | [Summary] | Low      | OPEN   | 🔗 Duplicate |
 
 **Leyenda:**
 - ⏳ Pendiente
@@ -1611,13 +1611,13 @@ Use this report at the end of a multi-bug session:
 
 ### Resumen Ejecutivo
 
-| Métrica | Valor |
-|---------|-------|
-| Bugs analizados | [N] |
-| Bugs arreglados | [N] |
-| Bugs rechazados (WAD/CNR/Duplicate) | [N] |
-| Commits realizados | [N] |
-| Archivos modificados | [N] |
+| Métrica                             | Valor |
+| ----------------------------------- | ----- |
+| Bugs analizados                     | [N]   |
+| Bugs arreglados                     | [N]   |
+| Bugs rechazados (WAD/CNR/Duplicate) | [N]   |
+| Commits realizados                  | [N]   |
+| Archivos modificados                | [N]   |
 
 ---
 
@@ -1625,45 +1625,45 @@ Use this report at the end of a multi-bug session:
 
 #### ✅ [PROJ-XX] - [Summary]
 
-| Aspecto | Detalle |
-|---------|---------|
-| Estado Final | Ready For QA |
-| Root Cause | [Category]: [Brief] |
-| Commit | [URL] |
-| Asignado a | [Tester] |
+| Aspecto      | Detalle             |
+| ------------ | ------------------- |
+| Estado Final | Ready For QA        |
+| Root Cause   | [Category]: [Brief] |
+| Commit       | [URL]               |
+| Asignado a   | [Tester]            |
 
 #### ❌ [PROJ-XX] - [Summary]
 
-| Aspecto | Detalle |
-|---------|---------|
+| Aspecto      | Detalle               |
+| ------------ | --------------------- |
 | Estado Final | WAD / Duplicate / CNR |
-| Razón | [Explicación breve] |
+| Razón        | [Explicación breve]   |
 
 ---
 
 ### Cambios en Código
 
-| Archivo | Bugs Relacionados | Cambio |
-|---------|-------------------|--------|
-| `path/to/file.ts` | PROJ-XX, PROJ-YY | [Descripción] |
-| `path/to/other.ts` | PROJ-ZZ | [Descripción] |
+| Archivo            | Bugs Relacionados | Cambio        |
+| ------------------ | ----------------- | ------------- |
+| `path/to/file.ts`  | PROJ-XX, PROJ-YY  | [Descripción] |
+| `path/to/other.ts` | PROJ-ZZ           | [Descripción] |
 
 ---
 
 ### Feedback Educacional Entregado
 
-| Tester | Puntos Clave |
-|--------|--------------|
+| Tester | Puntos Clave           |
+| ------ | ---------------------- |
 | [Name] | [Resumen del feedback] |
 
 ---
 
 ### Próximos Bugs a Atender
 
-| # | Key | Summary | Priority |
-|---|-----|---------|----------|
-| 1 | [PROJ-XX] | [Summary] | [Priority] |
-| 2 | [PROJ-XX] | [Summary] | [Priority] |
+| #   | Key       | Summary   | Priority   |
+| --- | --------- | --------- | ---------- |
+| 1   | [PROJ-XX] | [Summary] | [Priority] |
+| 2   | [PROJ-XX] | [Summary] | [Priority] |
 ```
 
 ---
@@ -1687,10 +1687,10 @@ To continue a previous session, paste this block with updated data:
 
 ### Bugs Pendientes de la Sesión Anterior
 
-| # | Key | Summary | Priority | Notas |
-|---|-----|---------|----------|-------|
-| 1 | [PROJ-XX] | [Summary] | [Priority] | [Contexto si hay] |
-| 2 | [PROJ-XX] | [Summary] | [Priority] | |
+| #   | Key       | Summary   | Priority   | Notas             |
+| --- | --------- | --------- | ---------- | ----------------- |
+| 1   | [PROJ-XX] | [Summary] | [Priority] | [Contexto si hay] |
+| 2   | [PROJ-XX] | [Summary] | [Priority] |                   |
 
 ---
 
@@ -1701,14 +1701,14 @@ To continue a previous session, paste this block with updated data:
 
 ## Troubleshooting
 
-| Issue                                 | Solution                                             |
-| ------------------------------------- | ---------------------------------------------------- |
-| "Field customfield_XXXXX not found"   | Use Fallback Strategy (search or include in comment) |
-| "Transition not valid"                | Check available transitions for current status       |
-| Cannot reproduce bug                  | Request more info, check environment differences     |
-| Fix breaks other tests                | Investigate regression, consider scope of fix        |
-| PR conflicts                          | Rebase on target branch, resolve conflicts           |
-| Hotfix needs backport                 | Use cherry-pick to apply to staging/develop          |
+| Issue                               | Solution                                             |
+| ----------------------------------- | ---------------------------------------------------- |
+| "Field customfield_XXXXX not found" | Use Fallback Strategy (search or include in comment) |
+| "Transition not valid"              | Check available transitions for current status       |
+| Cannot reproduce bug                | Request more info, check environment differences     |
+| Fix breaks other tests              | Investigate regression, consider scope of fix        |
+| PR conflicts                        | Rebase on target branch, resolve conflicts           |
+| Hotfix needs backport               | Use cherry-pick to apply to staging/develop          |
 
 ### Custom Fields Not Returned (Common Issue)
 

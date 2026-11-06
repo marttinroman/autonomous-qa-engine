@@ -42,10 +42,10 @@ Crear planes técnicos de implementación **ANTES** de escribir código. Define 
 ```
 Test Plans (Fase 5)
         ↓
-┌───────────────────────────────────────┐
+┌───────────────────────────────────--───┐
 │  [1] Feature Implementation Plan       │
 │      (Epic Level)                      │
-├───────────────────────────────────────┤
+├─────────────────────────────────────-──┤
 │                                        │
 │  Input:                                │
 │  - Epic + Stories                      │
@@ -62,12 +62,12 @@ Test Plans (Fase 5)
 │  Output:                               │
 │  - feature-implementation-plan.md      │
 │                                        │
-└───────────────────────────────────────┘
+└──────────────────────────────────────-─┘
         ↓
-┌───────────────────────────────────────┐
+┌──────────────────────────────────────-─┐
 │  [2] Story Implementation Plan         │
 │      (Story Level)                     │
-├───────────────────────────────────────┤
+├───────────────────────────────────────-┤
 │                                        │
 │  Input:                                │
 │  - Story + Test Cases                  │
@@ -84,7 +84,7 @@ Test Plans (Fase 5)
 │  Output:                               │
 │  - implementation-plan.md              │
 │                                        │
-└───────────────────────────────────────┘
+└───────────────────────────────────────-┘
 ```
 
 ---
@@ -93,28 +93,28 @@ Test Plans (Fase 5)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│           MCP VERIFICATION (OBLIGATORIO)                     │
+│           MCP VERIFICATION (OBLIGATORIO)                    │
 ├─────────────────────────────────────────────────────────────┤
-│                                                              │
+│                                                             │
 │  ANTES de tomar decisiones técnicas:                        │
-│                                                              │
+│                                                             │
 │  1. Context7 MCP (MÁS IMPORTANTE)                           │
 │     - Verificar APIs de librerías                           │
 │     - Confirmar métodos/hooks existen                       │
 │     - Obtener best practices actualizadas                   │
-│                                                              │
+│                                                             │
 │  2. Supabase MCP (si hay backend/DB)                        │
 │     - Verificar capacidades de Supabase                     │
 │     - Confirmar APIs disponibles                            │
 │     - Patrones recomendados                                 │
-│                                                              │
+│                                                             │
 │  3. shadcn MCP (si hay UI)                                  │
 │     - Buscar componentes existentes                         │
 │     - Evitar crear custom si shadcn tiene                   │
 │     - Verificar variantes disponibles                       │
-│                                                              │
+│                                                             │
 │  Beneficio: Decisiones basadas en docs oficiales            │
-│                                                              │
+│                                                             │
 └─────────────────────────────────────────────────────────────┘
 ```
 
