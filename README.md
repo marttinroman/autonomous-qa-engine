@@ -48,16 +48,19 @@ flowchart TD
 ```
 
 ### Layer 1: UI & Critical Flows
+
 - **Framework:** Playwright + TypeScript.
 - **Patterns:** Page Object Model (POM), custom isolated fixtures, auto-waiting locators.
 - **Execution:** Headless multi-browser parallelization across Chromium, Firefox, and WebKit.
 
 ### Layer 2: API Contract & Latency Validation
+
 - **Validation:** Strict OpenAPI & JSON schema conformance checking.
 - **Performance:** Enforces percentile response time budgets ($p95 < 500\text{ms}$).
 - **Resilience:** Automatic status code validation and contract drift warnings.
 
 ### Layer 3: AI Semantic Evaluation (RAG Harness)
+
 - **Scoring:** Measures cosine similarity of vector embeddings between generated answers and ground-truth retrieved context.
 - **Faithfulness:** Verifies factual grounding to eliminate hallucinations.
 - **Safety:** Automated prompt regression tests whenever system prompts or model versions update.
@@ -76,6 +79,7 @@ flowchart TD
 ## 4. Quickstart
 
 ### Prerequisites
+
 - Node.js (v18+) or [Bun](https://bun.sh)
 - Python 3.11+
 
@@ -114,10 +118,11 @@ python -m pytest tests/ai_eval/ -v
 ## 5. Author & Contact
 
 **Marttin Roman**  
-*Senior QA Automation Engineer & SDET | AI-TestOps Specialist*  
-- **Portfolio:** [marttinroman.github.io](https://marttinroman.github.io)  
-- **LinkedIn:** [linkedin.com/in/marttinroman](https://linkedin.com/in/marttinroman)  
-- **Email:** [marttinroman@gmail.com](mailto:marttinroman@gmail.com)  
+_Senior QA Automation Engineer & SDET | AI-TestOps Specialist_
+
+- **Portfolio:** [marttinroman.github.io](https://marttinroman.github.io)
+- **LinkedIn:** [linkedin.com/in/marttinroman](https://linkedin.com/in/marttinroman)
+- **Email:** [marttinroman@gmail.com](mailto:marttinroman@gmail.com)
 
 ---
 

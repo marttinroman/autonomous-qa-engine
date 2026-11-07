@@ -56,14 +56,14 @@ bun run xray
 
 > Replace placeholders with your project details.
 
-| Aspect             | Value                                                     |
-| ------------------ | --------------------------------------------------------- |
-| **Name**           | [Your Project Name]                                       |
-| **Type**           | [e.g., B2B Web Platform, E-commerce, SaaS]                |
-| **Stack**          | [e.g., React + TypeScript (FE), Node.js (BE), PostgreSQL] |
-| **Target Repo**    | [Path to application repository]                          |
-| **Starter Repo**   | [Path to this project-starter repository]                 |
-| **Test Framework** | Playwright + KATA + Allure                                |
+| Aspect             | Value                                                                    |
+| ------------------ | ------------------------------------------------------------------------ |
+| **Name**           | Autonomous QA & AI-TestOps Engine                                        |
+| **Type**           | Automated Quality Gate & AI-TestOps Platform                             |
+| **Stack**          | Playwright + TypeScript (FE/API), Python 3.11+ (AI Eval), GitHub Actions |
+| **Target Repo**    | .                                                                        |
+| **Starter Repo**   | /Users/marttinroman/projects/2026/publics/autonomous-qa-engine           |
+| **Test Framework** | Playwright + KATA + Pytest + Allure                                      |
 
 **TL;DR Flow:**
 

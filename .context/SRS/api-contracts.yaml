@@ -5,7 +5,7 @@ info:
   description: |
     Formal OpenAPI specification defining the contracts, payloads, and latency budgets for the
     System Under Test (SUT) and the Autonomous QA & AI-TestOps Engine.
-    
+
     Covers:
     - Layer 1 & Layer 2: Core authentication, user profile, and system health SLA probes.
     - Layer 3: Generative AI / RAG query endpoints and semantic evaluation harnesses.
@@ -42,14 +42,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/HealthCheckResponse'
               example:
-                status: "healthy"
-                timestamp: "2026-11-06T19:30:00Z"
+                status: healthy
+                timestamp: '2026-11-06T19:30:00Z'
                 uptimeSeconds: 86400
                 latencyMs: 42.5
                 database:
                   connected: true
                   responseTimeMs: 8.2
-                version: "1.0.0"
+                version: 1.0.0
         '500':
           $ref: '#/components/responses/InternalServerError'
         '503':
@@ -71,8 +71,8 @@ paths:
             schema:
               $ref: '#/components/schemas/LoginRequest'
             example:
-              email: "alex.sdet@example.com"
-              password: "SecurePassword123!"
+              email: alex.sdet@example.com
+              password: SecurePassword123!
       responses:
         '200':
           description: Authentication successful.
@@ -81,13 +81,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/LoginResponse'
               example:
-                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                tokenType: "Bearer"
+                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                tokenType: Bearer
                 expiresIn: 3600
                 user:
-                  id: "usr_9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d"
-                  email: "alex.sdet@example.com"
-                  role: "sdet"
+                  id: usr_9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d
+                  email: alex.sdet@example.com
+                  role: sdet
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -110,12 +110,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserProfile'
               example:
-                id: "usr_9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d"
-                email: "alex.sdet@example.com"
-                fullName: "Alex Rivera"
-                role: "sdet"
-                organization: "Quality Engineering Labs"
-                createdAt: "2026-01-15T10:00:00Z"
+                id: usr_9a8b7c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d
+                email: alex.sdet@example.com
+                fullName: Alex Rivera
+                role: sdet
+                organization: Quality Engineering Labs
+                createdAt: '2026-01-15T10:00:00Z'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -139,7 +139,7 @@ paths:
             schema:
               $ref: '#/components/schemas/RAGQueryRequest'
             example:
-              query: "What is the policy for cancellation refunds?"
+              query: What is the policy for cancellation refunds?
               topK: 3
               temperature: 0.0
       responses:
@@ -150,13 +150,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/RAGQueryResponse'
               example:
-                query: "What is the policy for cancellation refunds?"
-                answer: "Cancellations made within 14 days of purchase receive a 100% full refund."
-                model: "gemini-1.5-pro"
+                query: What is the policy for cancellation refunds?
+                answer: 'Cancellations made within 14 days of purchase receive a 100% full refund.'
+                model: gemini-1.5-pro
                 latencyMs: 410.2
                 retrievedContext:
-                  - documentId: "doc_policy_2026_01"
-                    content: "Article 4: Full refund is guaranteed for cancellations requested within 14 calendar days."
+                  - documentId: doc_policy_2026_01
+                    content: 'Article 4: Full refund is guaranteed for cancellations requested within 14 calendar days.'
                     similarityScore: 0.93
                 tokenUsage:
                   promptTokens: 120
@@ -191,11 +191,11 @@ paths:
             schema:
               $ref: '#/components/schemas/SemanticEvaluationRequest'
             example:
-              testId: "TC-AI-001"
-              generatedAnswer: "Full refunds are guaranteed within 14 days."
-              groundTruthAnswer: "Customers receive a 100% refund if cancelled within 14 days."
+              testId: TC-AI-001
+              generatedAnswer: Full refunds are guaranteed within 14 days.
+              groundTruthAnswer: 'Customers receive a 100% refund if cancelled within 14 days.'
               retrievedContextChunks:
-                - "Article 4: Full refund is guaranteed for cancellations requested within 14 calendar days."
+                - 'Article 4: Full refund is guaranteed for cancellations requested within 14 calendar days.'
               similarityThreshold: 0.80
               faithfulnessThreshold: 0.85
       responses:
@@ -206,7 +206,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SemanticEvaluationResponse'
               example:
-                testId: "TC-AI-001"
+                testId: TC-AI-001
                 cosineSimilarity: 0.915
                 faithfulnessScore: 1.0
                 passedThreshold: true
@@ -230,7 +230,7 @@ paths:
           required: false
           schema:
             type: string
-          example: "main"
+          example: main
         - name: status
           in: query
           required: false
@@ -275,11 +275,11 @@ paths:
             schema:
               $ref: '#/components/schemas/TestRunCreateRequest'
             example:
-              commitSha: "1c77779d85e7a9b0c2d3e4f5a6b7c8d9e0f1a2b3"
-              branch: "main"
-              triggeredBy: "github-actions"
-              environment: "staging"
-              layers: ["UI", "API", "AI_EVAL"]
+              commitSha: 1c77779d85e7a9b0c2d3e4f5a6b7c8d9e0f1a2b3
+              branch: main
+              triggeredBy: github-actions
+              environment: staging
+              layers: [UI, API, AI_EVAL]
       responses:
         '201':
           description: Test run registered successfully.
@@ -304,7 +304,7 @@ paths:
           schema:
             type: string
             format: uuid
-          example: "run_8f3b2a1c-9d0e-4f5a-b6c7-d8e9f0a1b2c3"
+          example: run_8f3b2a1c-9d0e-4f5a-b6c7-d8e9f0a1b2c3
       responses:
         '200':
           description: Test run details.
@@ -335,9 +335,9 @@ components:
           example:
             success: false
             error:
-              code: "VALIDATION_ERROR"
+              code: VALIDATION_ERROR
               message: "Missing required property 'email' in request body."
-              timestamp: "2026-11-06T19:30:00Z"
+              timestamp: '2026-11-06T19:30:00Z'
 
     Unauthorized:
       description: Missing or expired bearer authorization token.
@@ -348,9 +348,9 @@ components:
           example:
             success: false
             error:
-              code: "UNAUTHORIZED"
-              message: "Access token is invalid or has expired."
-              timestamp: "2026-11-06T19:30:00Z"
+              code: UNAUTHORIZED
+              message: Access token is invalid or has expired.
+              timestamp: '2026-11-06T19:30:00Z'
 
     NotFound:
       description: Requested resource was not found.
@@ -361,9 +361,9 @@ components:
           example:
             success: false
             error:
-              code: "NOT_FOUND"
-              message: "Resource does not exist."
-              timestamp: "2026-11-06T19:30:00Z"
+              code: NOT_FOUND
+              message: Resource does not exist.
+              timestamp: '2026-11-06T19:30:00Z'
 
     InternalServerError:
       description: Unexpected internal server error.
@@ -374,9 +374,9 @@ components:
           example:
             success: false
             error:
-              code: "INTERNAL_SERVER_ERROR"
-              message: "An unexpected error occurred while processing the request."
-              timestamp: "2026-11-06T19:30:00Z"
+              code: INTERNAL_SERVER_ERROR
+              message: An unexpected error occurred while processing the request.
+              timestamp: '2026-11-06T19:30:00Z'
 
   schemas:
     HealthCheckResponse:
@@ -415,7 +415,7 @@ components:
               format: float
         version:
           type: string
-          example: "1.0.0"
+          example: 1.0.0
 
     LoginRequest:
       type: object
@@ -445,7 +445,7 @@ components:
           type: string
         tokenType:
           type: string
-          example: "Bearer"
+          example: Bearer
         expiresIn:
           type: integer
           description: Token validity in seconds.
@@ -465,7 +465,7 @@ components:
               format: email
             role:
               type: string
-              example: "sdet"
+              example: sdet
 
     UserProfile:
       type: object
@@ -579,7 +579,7 @@ components:
       properties:
         testId:
           type: string
-          example: "TC-AI-001"
+          example: TC-AI-001
         generatedAnswer:
           type: string
         groundTruthAnswer:
@@ -753,7 +753,7 @@ components:
           properties:
             code:
               type: string
-              example: "VALIDATION_ERROR"
+              example: VALIDATION_ERROR
             message:
               type: string
             details:

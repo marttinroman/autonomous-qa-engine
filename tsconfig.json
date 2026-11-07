@@ -2,12 +2,21 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022"],
-    "module": "ESNext",
+    "lib": ["ES2022", "DOM"],
     "moduleDetection": "force",
+    "baseUrl": ".",
+    "module": "ESNext",
     "moduleResolution": "bundler",
+    "paths": {
+      "@ui/*": ["tests/components/ui/*"],
+      "@api/*": ["tests/components/api/*"],
+      "@schemas/*": ["tests/schemas/*"],
+      "@utils/*": ["tests/utils/*"],
+      "@steps/*": ["tests/components/steps/*"],
+      "@fixtures/*": ["tests/components/*"]
+    },
     "resolveJsonModule": true,
-    "types": ["bun-types", "node"],
+    "types": ["bun-types", "node", "@playwright/test"],
     "strict": true,
     "noEmit": true,
     "allowSyntheticDefaultImports": true,
@@ -17,5 +26,5 @@
     "skipLibCheck": true
   },
   "include": ["**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "allure-report", "allure-results", "playwright-report"]
 }

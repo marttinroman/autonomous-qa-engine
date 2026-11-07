@@ -1,6 +1,5 @@
 Nota: Este archivo no es un duplicado, la idea es mantener esta informacion en el proyecto dado que el archivo "README.md", al clonar o usar la plantilla como base para iniciar un proyecto nuevo, tiende a ser modificado y actualizado con la nueva informacion relevante.
 
-
 # BIG PICTURE - Arquitectura Completa del Repositorio
 
 ## Estructura Visual Completa
