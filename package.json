@@ -18,8 +18,8 @@
   "scripts": {
     "test:e2e": "playwright test tests/e2e",
     "test:api": "playwright test tests/integration",
-    "test:ai": "python3 -m pytest tests/ai_eval -v",
-    "test:all": "playwright test && python3 -m pytest tests/ai_eval -v",
+    "test:ai": ".venv/bin/pytest tests/ai_eval -v",
+    "test:all": "playwright test && .venv/bin/pytest tests/ai_eval -v",
     "test:ui": "playwright test --ui",
     "report:allure": "allure generate allure-results --clean -o allure-report && allure open allure-report",
     "api:sync": "bun cli/sync-openapi.ts",

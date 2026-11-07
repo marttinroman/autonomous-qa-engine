@@ -42,6 +42,13 @@ yarn-error.log*
 .env.*.local
 .env.sentry-build-plugin
 
+# ===== Python Virtual Environment =====
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
 # ===== IDE & Editor =====
 .idea/
 *.swp

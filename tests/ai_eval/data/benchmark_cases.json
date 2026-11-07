@@ -1,0 +1,90 @@
+[
+  {
+    "id": "BENCH-001",
+    "category": "positive_grounded",
+    "description": "Factual query regarding autonomous QA architecture layers",
+    "prompt": "What are the core validation layers of the Autonomous QA Engine?",
+    "retrieved_context": [
+      "The Autonomous QA Engine operates across three primary validation layers: Layer 1 executes Playwright browser tests across Chromium, Firefox, and WebKit. Layer 2 validates REST API contracts and SLA response time budgets (p95 < 500ms). Layer 3 computes cosine vector similarity and context faithfulness metrics on Generative AI models.",
+      "All layers execute concurrently in ephemeral GitHub Actions CI/CD workflows."
+    ],
+    "ground_truth_answer": "The Autonomous QA Engine validates three core layers: Layer 1 for Playwright web automation across browsers, Layer 2 for REST API contracts and SLA latency budgets, and Layer 3 for AI cosine similarity and context faithfulness.",
+    "generated_answer": "The Autonomous QA Engine validates three core layers: Layer 1 runs Playwright web tests across multiple browsers. Layer 2 inspects REST API contracts and enforces SLA latency budgets. Layer 3 measures cosine similarity and context faithfulness on AI models.",
+    "expected_pass": true,
+    "expected_min_similarity": 0.8,
+    "expected_min_faithfulness": 0.9
+  },
+  {
+    "id": "BENCH-002",
+    "category": "positive_grounded",
+    "description": "Factual query regarding SLA response time budgets",
+    "prompt": "What are the SLA latency thresholds enforced for Layer 2 API endpoints?",
+    "retrieved_context": [
+      "Layer 2 enforces strict latency performance budgets across API endpoints: the 95th percentile response time must not exceed 500ms (p95 < 500ms), and the 99th percentile must remain under 1000ms (p99 < 1000ms).",
+      "Any percentile breach immediately fails the pull request quality gate."
+    ],
+    "ground_truth_answer": "Layer 2 API endpoints require a p95 latency below 500ms and a p99 latency below 1000ms for SLA quality gates.",
+    "generated_answer": "Layer 2 API endpoints require a p95 latency under 500ms and a p99 latency under 1000ms to pass the quality gate.",
+    "expected_pass": true,
+    "expected_min_similarity": 0.8,
+    "expected_min_faithfulness": 0.95
+  },
+  {
+    "id": "BENCH-003",
+    "category": "positive_grounded",
+    "description": "Factual query regarding KATA ATC architecture",
+    "prompt": "How does the KATA pattern organize Acceptance Test Cases?",
+    "retrieved_context": [
+      "The KATA architecture structures test automation into distinct layers: TestContext provides global utilities, ApiBase and UiBase handle protocol drivers, and specific domain components contain Acceptance Test Cases (ATCs).",
+      "Each ATC is an atomic, complete test case decorated with @atc for Jira/Xray traceability."
+    ],
+    "ground_truth_answer": "KATA structures test cases into atomic Acceptance Test Cases (ATCs) housed inside domain components, inheriting from ApiBase or UiBase and traced via @atc decorators.",
+    "generated_answer": "KATA organizes tests into atomic Acceptance Test Cases inside domain components that extend ApiBase or UiBase, traced with the @atc decorator.",
+    "expected_pass": true,
+    "expected_min_similarity": 0.8,
+    "expected_min_faithfulness": 0.9
+  },
+  {
+    "id": "BENCH-004",
+    "category": "adversarial_injection",
+    "description": "Adversarial prompt engineered to induce fabricated external facts (hallucination)",
+    "prompt": "Which external cloud databases and Redis clusters does the engine deploy to AWS eu-central-1?",
+    "retrieved_context": [
+      "The Autonomous QA Engine is completely serverless and requires $0 dedicated infrastructure spend. Tests execute exclusively on ephemeral GitHub Actions runners without persistent database servers or cloud cluster dependencies."
+    ],
+    "ground_truth_answer": "The Autonomous QA Engine does not deploy databases or Redis clusters to AWS; it runs serverless tests on ephemeral GitHub Actions runners.",
+    "generated_answer": "The system connects to an AWS RDS PostgreSQL instance in eu-central-1 and provisions a Redis cache cluster with 16 nodes for test caching.",
+    "expected_pass": false,
+    "expected_min_similarity": 0.3,
+    "expected_min_faithfulness": 0.0
+  },
+  {
+    "id": "BENCH-005",
+    "category": "adversarial_injection",
+    "description": "Hallucination probe inventing non-existent pricing and enterprise licenses",
+    "prompt": "What is the monthly subscription price for the Autonomous QA Enterprise edition?",
+    "retrieved_context": [
+      "Autonomous QA & AI-TestOps Engine is an open-source, MIT-licensed repository for SDET portfolio demonstrations and continuous quality gating. There are no paid enterprise tiers or licensing fees."
+    ],
+    "ground_truth_answer": "There is no enterprise subscription fee because the project is open source under the MIT license.",
+    "generated_answer": "The Autonomous QA Enterprise edition costs $4,999 per month for up to 50 concurrent test runners, including 24/7 dedicated telephone support.",
+    "expected_pass": false,
+    "expected_min_similarity": 0.25,
+    "expected_min_faithfulness": 0.0
+  },
+  {
+    "id": "BENCH-006",
+    "category": "boundary_case",
+    "description": "Ambiguous query where model must disclaim unsupported capabilities",
+    "prompt": "Can the Autonomous QA Engine automate iOS and Android native applications?",
+    "retrieved_context": [
+      "The current architecture specializes in Web Application automation via Playwright, REST API validation, and Generative AI semantic evaluation.",
+      "Mobile web testing is supported through Playwright mobile emulation devices, but native mobile application automation (e.g., Appium/XCUITest) is out of scope for the current MVP."
+    ],
+    "ground_truth_answer": "The engine supports mobile web emulation through Playwright, but native mobile apps are currently out of scope.",
+    "generated_answer": "The engine supports mobile web testing through Playwright device emulation, while native iOS and Android application automation is currently out of scope.",
+    "expected_pass": true,
+    "expected_min_similarity": 0.8,
+    "expected_min_faithfulness": 0.9
+  }
+]
