@@ -1,1 +1,2 @@
-bunx lint-staged
+export PATH="$HOME/.bun/bin:$PATH"
+bunx lint-staged || npx lint-staged

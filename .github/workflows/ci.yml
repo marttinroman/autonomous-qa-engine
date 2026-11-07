@@ -1,0 +1,317 @@
+name: Continuous Quality Gate & AI-TestOps CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * *' # Daily at 02:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+  pull-requests: write
+  issues: write
+
+env:
+  CI: 'true'
+  TEST_ENV: 'local'
+  LOCAL_WEB_URL: 'http://localhost:3000'
+  LOCAL_API_URL: 'http://localhost:3000/api/v1'
+  API_SLA_P95_MS: '500'
+  API_SLA_P99_MS: '1000'
+  AI_SIMILARITY_THRESHOLD: '0.80'
+  AI_FAITHFULNESS_THRESHOLD: '0.85'
+
+jobs:
+  # ===========================================================================
+  # Gate 0: Static Analysis, Formatting & Unit Tests
+  # ===========================================================================
+  quality-gate-lint:
+    name: 🛡️ Code Quality & Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun Runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache Bun Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock', '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Verify Code Formatting
+        run: bun run format:check
+
+      - name: Execute Strict ESLint Rules
+        run: bun run lint
+
+      - name: Execute Agnostic Unit Tests
+        run: bun test tests/utils/
+
+  # ===========================================================================
+  # Gate 1: Layer 1 Web UI Automation (Cross-Browser Matrix)
+  # ===========================================================================
+  layer1-web-ui:
+    name: 🌐 Layer 1 UI — ${{ matrix.browser }}
+    needs: [quality-gate-lint]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun Runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache Bun Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock', '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Cache Playwright Browser Binaries
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ matrix.browser }}-${{ hashFiles('**/bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-${{ matrix.browser }}-
+
+      - name: Install Browser Engine & System Dependencies
+        run: bunx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Mask Sensitive Credentials in Logs
+        run: |
+          echo "::add-mask::alex.sdet@example.com"
+          echo "::add-mask::SecurePassword123!"
+
+      - name: Run Playwright E2E Tests (${{ matrix.browser }})
+        run: bunx playwright test tests/e2e --project=${{ matrix.browser }}
+
+      - name: Upload Test Traces & Videos on Failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-artifacts-${{ matrix.browser }}
+          path: test-results/
+          retention-days: 7
+
+      - name: Upload Allure Results Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-results-ui-${{ matrix.browser }}
+          path: allure-results/
+          retention-days: 1
+
+  # ===========================================================================
+  # Gate 2: Layer 2 REST API Contract & SLA Latency Budget Guard
+  # ===========================================================================
+  layer2-rest-api:
+    name: ⚡ Layer 2 API — Contracts & SLAs
+    needs: [quality-gate-lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun Runtime
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache Bun Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock', '**/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Mask Sensitive Credentials in Logs
+        run: |
+          echo "::add-mask::alex.sdet@example.com"
+          echo "::add-mask::SecurePassword123!"
+
+      - name: Run OpenAPI Contract & SLA Tests
+        run: bun run test:api
+
+      - name: Upload Allure Results Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-results-api
+          path: allure-results/
+          retention-days: 1
+
+  # ===========================================================================
+  # Gate 3: Layer 3 AI Semantic Evaluation & RAG Faithfulness Harness
+  # ===========================================================================
+  layer3-ai-eval:
+    name: 🧠 Layer 3 AI — RAG Semantic Evaluation
+    needs: [quality-gate-lint]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11 Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Evaluation Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Execute RAG Evaluation Suite
+        run: pytest tests/ai_eval -v --alluredir=allure-results
+
+      - name: Upload Allure Results Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-results-ai
+          path: allure-results/
+          retention-days: 1
+
+  # ===========================================================================
+  # Gate 4: TestOps Allure Compilation & GitHub Pages Edge CDN Deploy
+  # ===========================================================================
+  publish-testops-report:
+    name: 📊 Publish Living TestOps Showcase
+    needs: [layer1-web-ui, layer2-rest-api, layer3-ai-eval]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download All Allure Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: allure-results-*
+          path: downloaded-results/
+          merge-multiple: true
+
+      - name: Consolidate Multi-Layer Allure Results
+        run: |
+          mkdir -p allure-results
+          if [ -d "downloaded-results" ]; then
+            cp -r downloaded-results/* allure-results/ || true
+          fi
+          echo "Total consolidated result files: $(ls -1 allure-results | wc -l)"
+
+      - name: Retrieve Historical Reports from gh-pages
+        uses: actions/checkout@v4
+        if: always()
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Build Allure Single-Page Application
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-build
+        with:
+          allure_results: allure-results
+          gh_pages: gh-pages
+          allure_report: allure-report
+          allure_history: allure-history
+          keep_reports: 30
+
+      - name: Deploy TestOps Showcase to GitHub Pages
+        if: always() && (github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch')
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Post Quality Gate PR Comment
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const reportUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}/`;
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const commitSha = context.sha.substring(0, 7);
+
+            const body = `### 🚀 Autonomous QA Engine — Continuous Quality Gate Report
+
+            **Validation Matrix Status across 3 Architecture Layers:**
+            - 🌐 **Layer 1 (Web UI Automation):** Chromium, Firefox, WebKit (Auto-waiting POM)
+            - ⚡ **Layer 2 (REST API Contracts & SLAs):** OpenAPI Validation & Latency Guard ($p95 < 500\text{ms}$)
+            - 🧠 **Layer 3 (AI Semantic Evaluation):** RAG Faithfulness & Cosine Similarity ($< 50\text{ms}$)
+
+            📊 **Live Allure TestOps Dashboard:** [View Interactive Report](${reportUrl})
+            🔍 **GitHub Actions Pipeline Run:** [View Execution Log](${runUrl})
+
+            *Triggered by commit \`${commitSha}\` on branch \`${context.ref}\`*`;
+
+            try {
+              const { data: comments } = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+
+              const botComment = comments.find(c =>
+                c.user.type === 'Bot' && c.body.includes('Autonomous QA Engine — Continuous Quality Gate Report')
+              );
+
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body,
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body,
+                });
+              }
+            } catch (err) {
+              core.warning(`Failed to post PR comment: ${err.message}`);
+            }
