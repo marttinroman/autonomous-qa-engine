@@ -265,13 +265,13 @@ flowchart TD
 
 ## 5. Phase 3 Definition of Done (DoD) Checklist
 
-- [ ] `bun install` completed; `node_modules` and `bun.lock` committed.
-- [ ] TypeScript path aliases (`@ui/*`, `@api/*`, `@schemas/*`, `@utils/*`) verified and operational.
-- [ ] Pre-commit hooks (`husky`, `eslint`, `prettier`) executing in $< 2$ seconds.
-- [ ] `ApiBase.ts` and Ajv schema validator operational against `.context/SRS/api-contracts.yaml`.
-- [ ] Python 3.11 virtual environment initialized with `requirements.txt`.
-- [ ] AI evaluators (`similarity.py`, `faithfulness.py`) scoring benchmarks in $< 50\text{ms}$.
-- [ ] `playwright.config.ts` configured for Chromium, Firefox, and WebKit with zero static sleeps.
-- [ ] `.github/workflows/ci.yml` executing 3 parallel layers on ephemeral Ubuntu runners in $< 5$ minutes.
-- [ ] Allure HTML report automatically deployed to GitHub Pages Edge CDN at $0 infrastructure cost.
-- [ ] Full local execution verified via `bun run test:all` with 100% pass rate.
+- [x] `bun install` completed; `node_modules` and `bun.lock` committed.
+- [x] TypeScript path aliases (`@ui/*`, `@api/*`, `@schemas/*`, `@utils/*`) verified and operational.
+- [x] Pre-commit hooks (`husky`, `eslint`, `prettier`) executing in $< 2$ seconds.
+- [x] `ApiBase.ts` and Ajv schema validator operational against `.context/SRS/api-contracts.yaml`.
+- [x] Python 3.11 virtual environment initialized with `requirements.txt`.
+- [x] AI evaluators (`similarity.py`, `faithfulness.py`) scoring benchmarks in $< 50\text{ms}$.
+- [x] `playwright.config.ts` configured for Chromium, Firefox, and WebKit with zero static sleeps.
+- [x] `.github/workflows/ci.yml` executing 3 parallel layers on ephemeral Ubuntu runners in $< 5$ minutes.
+- [x] Allure HTML report automatically deployed to GitHub Pages Edge CDN at $0 infrastructure cost.
+- [x] Full local execution verified via `bun run test:all` with 100% pass rate.
