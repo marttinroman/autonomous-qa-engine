@@ -8,12 +8,14 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
-      "@ui/*": ["tests/components/ui/*"],
       "@api/*": ["tests/components/api/*"],
+      "@config/*": ["config/*"],
+      "@fixtures/*": ["tests/components/*"],
       "@schemas/*": ["tests/schemas/*"],
-      "@utils/*": ["tests/utils/*"],
       "@steps/*": ["tests/components/steps/*"],
-      "@fixtures/*": ["tests/components/*"]
+      "@ui/*": ["tests/components/ui/*"],
+      "@utils/*": ["tests/utils/*"],
+      "@variables": ["config/variables.ts"]
     },
     "resolveJsonModule": true,
     "types": ["bun-types", "node", "@playwright/test"],

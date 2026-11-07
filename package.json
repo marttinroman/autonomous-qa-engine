@@ -23,6 +23,7 @@
     "test:ui": "playwright test --ui",
     "report:allure": "allure generate allure-results --clean -o allure-report && allure open allure-report",
     "api:sync": "bun cli/sync-openapi.ts",
+    "mock:server": "bun tests/server/mockServer.ts",
     "up": "bun cli/update-template.js",
     "resend": "bun cli/resend.ts",
     "xray": "bun cli/xray/index.ts",
@@ -54,6 +55,7 @@
     "eslint": "^9.28.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
+    "openapi-typescript": "^7.13.0",
     "prettier": "^3.7.4",
     "typescript": "^5.9.3"
   },

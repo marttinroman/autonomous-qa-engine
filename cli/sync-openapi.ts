@@ -25,9 +25,9 @@ import { $ } from 'bun';
 // Configuration
 // ============================================
 
-const API_DIR = `${import.meta.dir}/../api`;
+const API_DIR = `${import.meta.dir}/../tests/schemas`;
 const CONFIG_FILE = `${API_DIR}/.openapi-config.json`;
-const TYPES_FILE = `${API_DIR}/openapi-types.ts`;
+const TYPES_FILE = `${API_DIR}/api.types.ts`;
 
 type SourceType = 'url' | 'github' | 'local';
 
@@ -211,7 +211,8 @@ async function getConfigInteractive(): Promise<OpenAPIConfig> {
   }
 
   if (choice === '3') {
-    const localPath = await prompt('Path to local OpenAPI file', './backend/docs/openapi.json');
+    const defaultLocalPath = './.context/SRS/api-contracts.yaml';
+    const localPath = await prompt('Path to local OpenAPI file', defaultLocalPath);
     const file = Bun.file(localPath);
     if (!(await file.exists())) {
       log(`File not found: ${localPath}`, 'error');
@@ -254,10 +255,11 @@ async function syncOpenAPI(config: OpenAPIConfig): Promise<{ success: boolean, e
 async function generateTypes(specFilePath: string): Promise<boolean> {
   log('Generating TypeScript types...');
 
-  const result = await $`bunx openapi-typescript ${specFilePath} -o ${TYPES_FILE}`.nothrow().quiet();
+  const binPath = `${import.meta.dir}/../node_modules/.bin/openapi-typescript`;
+  const result = await $`bun ${binPath} ${specFilePath} -o ${TYPES_FILE}`.nothrow();
 
   if (result.exitCode === 0) {
-    log('Types generated at api/openapi-types.ts', 'success');
+    log('Types generated at tests/schemas/api.types.ts', 'success');
     return true;
   }
 
